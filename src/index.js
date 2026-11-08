@@ -4,11 +4,10 @@ import { dirname } from "node:path"
 const OUTPUT = "public/index.html";
 
 async function main() {
-    const oldData = await readFile(OUTPUT, "utf8");
+    const oldData = JSON.parse(await readFile(OUTPUT, "utf8"));
     const newData = {
         "lastUpdated": Date.now(),
-        "version": (Number.parseInt(oldData["version"]) ?? 0) + 1,
-        ...oldData
+        "version": (Number.parseInt(oldData.version) ?? 0) + 1,
     };
     await mkdir(dirname(OUTPUT), { recursive: true });
     await writeFile(OUTPUT, JSON.stringify(newData, null, 2) + "\n", "utf8");
