@@ -1,14 +1,17 @@
-import { writeFile, mkdir } from "node:fs/promises";
+import { writeFile, mkdir, readFile } from "node:fs/promises";
 import { dirname } from "node:path"
 
 const OUTPUT = "public/index.html";
 
 async function main() {
-    const data = {
-        "dog": "?"
-    }
+    const oldData = await readFile(OUTPUT, "utf8");
+    const newData = {
+        "lastUpdated": Date.now(),
+        "version": (Number.parseInt(oldData["version"]) ?? 0) + 1,
+        ...oldData
+    };
     await mkdir(dirname(OUTPUT), { recursive: true });
-    await writeFile(OUTPUT, JSON.stringify(data, null, 2) + "\n", "utf8");
+    await writeFile(OUTPUT, JSON.stringify(newData, null, 2) + "\n", "utf8");
 }
 
 main().catch(err => {
